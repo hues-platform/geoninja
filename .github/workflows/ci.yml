@@ -1,0 +1,191 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint_backend:
+    name: Lint (backend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          pip install poetry
+
+      - name: Install deps
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+          POETRY_NO_INTERACTION: "1"
+        run: poetry install --with dev
+
+      - name: Ruff
+        run: >
+          poetry run ruff check src
+          --config pyproject.toml
+          --output-format=full
+          --output-file=ruff_report.txt
+          --ignore C901
+
+      - name: Mypy
+        run: poetry run mypy src --config-file pyproject.toml --junit-xml mypy_report.xml
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-lint-reports
+          path: |
+            backend/ruff_report.txt
+            backend/mypy_report.xml
+          retention-days: 7
+
+  lint_frontend:
+    name: Lint (frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install deps
+        run: |
+          node --version
+          npm --version
+          npm ci
+
+      - name: Lint + format check
+        run: |
+          npm run lint
+          npm run format:check
+
+  test_backend:
+    name: Test (backend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [lint_backend, lint_frontend]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          pip install poetry
+
+      - name: Install deps
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+          POETRY_NO_INTERACTION: "1"
+        run: poetry install --with dev
+
+      - name: Pytest
+        run: >
+          poetry run pytest
+          -m "not glim and not glhymps and not hydr_grad"
+          -q
+          --junitxml=pytest_report.xml
+
+      - name: Upload pytest report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-pytest-report
+          path: backend/pytest_report.xml
+          retention-days: 7
+
+  test_frontend:
+    name: Test (frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [lint_backend, lint_frontend]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install deps
+        run: |
+          node --version
+          npm --version
+          npm ci
+
+      - name: Test
+        run: npm run test
+
+      - name: Upload junit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-junit
+          path: frontend/junit.xml
+          retention-days: 7
+
+  build_frontend:
+    name: Build (frontend)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [test_backend, test_frontend]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          retention-days: 7
