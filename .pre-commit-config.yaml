@@ -1,0 +1,54 @@
+default_language_version:
+  python: python3
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+        args: ["--maxkb=3000"]
+      - id: detect-private-key
+      - id: mixed-line-ending
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        name: ruff (lint)
+        args: [--fix]
+        files: ^backend/
+      - id: ruff-format
+        name: ruff (format)
+        files: ^backend/
+
+  - repo: local
+    hooks:
+      - id: mypy-backend
+        name: mypy (backend via poetry)
+        entry: C:/Users/bede/AppData/Local/anaconda3/envs/geoninja_empa/Scripts/poetry.exe -C backend run mypy src --config-file pyproject.toml
+        language: system
+        pass_filenames: false
+        files: ^backend/
+
+  - repo: local
+    hooks:
+      - id: prettier-frontend
+        name: prettier (frontend)
+        entry: bash -lc "cd frontend && npx prettier --write ."
+        language: system
+        pass_filenames: false
+        files: ^frontend/
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint (frontend)
+        entry: bash -lc "cd frontend && npm run -s lint"
+        language: system
+        pass_filenames: false
+        files: ^frontend/

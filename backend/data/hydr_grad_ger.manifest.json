@@ -1,0 +1,68 @@
+{
+  "dataset": {
+    "name": "hydr_grad_ger",
+    "version": "0.2.0",
+    "description": "Hydraulic gradient raster prepared for GeoNinja lookup",
+    "format": "geotiff",
+    "data_type": "raster",
+    "bands": 1,
+    "dtype": "float32",
+    "crs": "EPSG:3857",
+    "width": 2284,
+    "height": 3101,
+    "pixel_size": {
+      "x": 446.92786392294215,
+      "y": -446.9278639148661,
+      "unit": "m"
+    },
+    "bounds": {
+      "left": 652888.8293,
+      "bottom": 5986921.3017,
+      "right": 1673672.0705,
+      "top": 7372844.6077,
+      "crs": "EPSG:3857"
+    },
+    "nodata": -9999.0,
+    "value_range": {
+      "min": 0.0,
+      "max": 21.3494815826416
+    },
+    "valid_fraction": 0.6630729254615906,
+    "quantity": "hydraulic_gradient",
+    "stored_unit": "percent",
+    "scale_factor_to_dimensionless": 0.01,
+    "notes": "Values assumed to be percent slope (%). Convert to dimensionless by * 0.01 before Darcy law."
+  },
+  "source": {
+    "origin": "Hydraulic gradient map for Germany",
+    "citation": null,
+    "publisher": null,
+    "url": null,
+    "license_note": null,
+    "input_files": [
+      "C:/Projects/geoninja-empa/data_pipeline/sources/hydr_grad/hydr_grad_ger.tif",
+      "C:/Projects/geoninja-empa/data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml"
+    ]
+  },
+  "processing": {
+    "pipeline_step": "dp_hydraulic_gradient",
+    "action": "copy",
+    "from": [
+      "C:/Projects/geoninja-empa/data_pipeline/sources/hydr_grad/hydr_grad_ger.tif",
+      "C:/Projects/geoninja-empa/data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml"
+    ],
+    "to": [
+      "C:/Projects/geoninja-empa/backend/data/hydr_grad_ger.tif",
+      "C:/Projects/geoninja-empa/backend/data/hydr_grad_ger.tif.aux.xml"
+    ],
+    "modifications": "no reprojection; keep EPSG:3857; assume stored values are percent; provide scale_factor_to_dimensionless=0.01"
+  },
+  "intended_use": {
+    "application": "GeoNinja backend",
+    "usage": "Raster sample-at-point lookup for hydraulic gradient; convert to dimensionless; compute v = K * i"
+  },
+  "generated": {
+    "by": "geoninja data pipeline",
+    "date": "2026-02-02"
+  }
+}

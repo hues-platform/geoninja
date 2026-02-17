@@ -1,0 +1,22 @@
+dataset: GLHYMPS 2.0
+full_name: GLobal HYdrogeology MaPS 2.0
+publisher: UVic Research Data Collection
+url: https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/TTJNIU
+license_note: >
+  Licensed under Creative Commons Attribution 4.0 International (CC-BY 4.0).
+  Redistribution and creation of derived products are permitted, provided appropriate
+  credit is given to the original authors and source.
+citation: >
+  Huscroft, J., Gleeson, T., Hartmann, J., & Börker, J. (2018).
+  Compiling and mapping global permeability of the unconsolidated and consolidated Earth: GLobal HYdrogeology MaPS 2.0 (GLHYMPS 2.0). Geophysical Research Letters, 45.doi: 10.1002/2017GL075860
+files:
+  shp: data_pipeline/sources/glhymps/GLHYMPS.shp
+  shx: data_pipeline/sources/glhymps/GLHYMPS.shx
+  dbf: data_pipeline/sources/glhymps/GLHYMPS.dbf
+  prj: data_pipeline/sources/glhymps/GLHYMPS.prj
+  qpj: data_pipeline/sources/glhymps/GLHYMPS.qpj
+dataverse:
+  base_url: "https://borealisdata.ca"
+  persistent_id: "doi:10.5683/SP2/TTJNIU"
+  api_token_env: "DATAVERSE_API_TOKEN"
+  cache_dir: "data_pipeline/sources/glhymps/_cache"

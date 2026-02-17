@@ -1,0 +1,110 @@
+{
+  "derived_quantities": [
+    {
+      "key": "hydrTrans",
+      "unit": "m²/s"
+    },
+    {
+      "key": "darcyVelo",
+      "unit": "m/s"
+    },
+    {
+      "key": "poreVelo",
+      "unit": "m/s"
+    },
+    {
+      "key": "thermFrontVelo",
+      "unit": "m/s"
+    },
+    {
+      "key": "retardFact",
+      "unit": "-"
+    },
+    {
+      "key": "fluidVolHeatCap",
+      "unit": "J/(m³·K)"
+    },
+    {
+      "key": "rockVolHeatCap",
+      "unit": "J/(m³·K)"
+    },
+    {
+      "key": "aqVolHeatCap",
+      "unit": "J/(m³·K)"
+    },
+    {
+      "key": "heatingDays",
+      "unit": "d"
+    },
+    {
+      "key": "coolingDays",
+      "unit": "d"
+    },
+    {
+      "key": "storativity",
+      "unit": "-"
+    }
+  ],
+  "ates_kpi_results": [
+    {
+      "key": "maxVolFlowRateHeat",
+      "unit": "m³/s"
+    },
+    {
+      "key": "maxVolFlowRateCool",
+      "unit": "m³/s"
+    },
+    {
+      "key": "maxMassFlowRateHeat",
+      "unit": "kg/s"
+    },
+    {
+      "key": "maxMassFlowRateCool",
+      "unit": "kg/s"
+    },
+    {
+      "key": "maxHeatRate",
+      "unit": "W"
+    },
+    {
+      "key": "maxCoolRate",
+      "unit": "W"
+    },
+    {
+      "key": "thermRadVolEqWarmWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermRadVolEqColdWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermRadAdvWarmWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermRadAdvColdWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermRadWarmWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermRadColdWell",
+      "unit": "m"
+    },
+    {
+      "key": "thermArea",
+      "unit": "m²"
+    },
+    {
+      "key": "maxHeatDensity",
+      "unit": "W/m²"
+    },
+    {
+      "key": "maxCoolDensity",
+      "unit": "W/m²"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+###############################################################################
+# Python / Backend (Poetry, Ruff, MyPy)
+###############################################################################
+
+# Virtual environments
+.venv/
+backend/.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ruff / MyPy / type checking
+.ruff_cache/
+.mypy_cache/
+
+# Test / coverage artifacts
+.coverage
+htmlcov/
+
+# CI-generated reports (we store them as artifacts, not in git)
+backend/ruff_report.txt
+backend/mypy_report.xml
+
+###############################################################################
+# Pre-commit
+###############################################################################
+
+.pre-commit-config.yaml~   # editor backups only
+
+###############################################################################
+# Frontend (Vite / Node / React / TypeScript / Tests)
+###############################################################################
+
+# Node dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+dist/
+frontend/dist/
+build/
+frontend/build/
+
+# Vite / tooling caches
+frontend/.vite/
+.vite/
+
+# Test output
+frontend/junit.xml
+
+###############################################################################
+# Docs (Sphinx, MkDocs, etc.)
+###############################################################################
+
+docs/_build/
+_site/
+
+###############################################################################
+# VS Code
+###############################################################################
+
+
+###############################################################################
+# OS / Editor junk
+###############################################################################
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+###############################################################################
+# Logs / temp files
+###############################################################################
+
+*.log
+*.tmp
+
+###############################################################################
+# Maps
+###############################################################################
+*.parquet
+*.dbf
+*.prj
+*.qpj
+*.shp
+*.shx
+*.tif
+*.tif.aux.xml
+data_pipeline/sources/*/_cache/*

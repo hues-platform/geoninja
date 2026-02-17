@@ -1,0 +1,60 @@
+{
+  "dataset": {
+    "name": "Rock properties by lithology",
+    "version": "0.2.0",
+    "description": "Representative bulk thermophysical rock properties mapped to GLiM lithology keys for GeoNinja parameter derivation",
+    "format": "csv",
+    "schema": {
+      "primary_key": "litho_key",
+      "fields": [
+        {
+          "name": "litho_key",
+          "type": "string",
+          "description": "GLiM lithology key (e.g., 'su', 'ss', 'mt')"
+        },
+        {
+          "name": "density_kg_m3",
+          "type": "number",
+          "unit": "kg/m^3",
+          "description": "Rock density"
+        },
+        {
+          "name": "spec_heat_cap_j_kgK",
+          "type": "number",
+          "unit": "J/(kg*K)",
+          "description": "Specific heat capacity"
+        },
+        {
+          "name": "therm_cond_w_mK",
+          "type": "number",
+          "unit": "W/(m*K)",
+          "description": "Thermal conductivity"
+        }
+      ]
+    }
+  },
+  "source": {
+    "origin": "",
+    "citation": "",
+    "input_file": "C:/Projects/geoninja-empa/data_pipeline/sources/rock_properties/rock_properties.csv"
+  },
+  "processing": {
+    "pipeline_step": "dp_rock_properties",
+    "action": "copy",
+    "from": "C:/Projects/geoninja-empa/data_pipeline/sources/rock_properties/rock_properties.csv",
+    "to": "C:/Projects/geoninja-empa/backend/data/rock_properties.csv",
+    "modifications": "none"
+  },
+  "intended_use": {
+    "application": "GeoNinja backend",
+    "usage": [
+      "Derivation of rockDensity parameter",
+      "Derivation of rockSpecHeatCap parameter",
+      "Derivation of rockThermCond parameter"
+    ]
+  },
+  "generated": {
+    "by": "geoninja data pipeline",
+    "date": "2026-02-17"
+  }
+}

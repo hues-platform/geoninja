@@ -1,0 +1,79 @@
+[project]
+name = "geoninja_backend"
+version = "0.2.0"
+description = "GeoNinja is a tool for retrieving geological and hydrogeological data relevant for underground thermal energy storage (UTES) systems. Given an input point on earth defined by latitude  and longitude, geoninja extracts relevant information based on linearized models and a multitude of precomputed maps. This is the backend handling query requests."
+authors = [
+    {name = "Dennis Beermann",email = "dennis.beermann@empa.ch"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi (>=0.128.0,<0.129.0)",
+    "uvicorn (>=0.40.0,<0.41.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+    "geopandas (>=1.1.2,<2.0.0)",
+    "pyarrow (>=23.0.0,<24.0.0)",
+    "tqdm (>=4.67.1,<5.0.0)",
+    "scipy (>=1.17.0,<2.0.0)",
+    "rasterio (>=1.4.0,<2.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pre-commit (>=4.5.1,<5.0.0)",
+    "ruff (>=0.14.10,<0.15.0)",
+    "mypy (>=1.19.1,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "scipy-stubs (>=1.17.0.2,<2.0.0.0)",
+    "types-requests (>=2.32.4.20260107,<3.0.0.0)"
+]
+
+[tool.poetry]
+packages = [{ include = "geoninja_backend", from = "src" }]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = [
+    "geopandas",
+    "geopandas.*",
+    "shapely",
+    "shapely.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "rasterio",
+    "rasterio.*",
+]
+ignore_missing_imports = true
+disable_error_code = ["import-untyped"]
+
+[tool.pytest.ini_options]
+markers = [
+    "glim: tests that require the GLiM (>2GB) dataset",
+    "glhymps: tests that require the GLhymps (>3GB) dataset",
+    "hydr_grad: tests that require the Hydrogeological Gradient (30MB) dataset"
+]

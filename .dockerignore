@@ -1,0 +1,23 @@
+# VCS
+.git
+.gitignore
+
+# Node
+**/node_modules
+**/dist
+**/.vite
+**/.turbo
+**/.cache
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.venv
+**/venv
+
+# Large datasets / artifacts
+backend/data/glim.parquet
+**/*.parquet

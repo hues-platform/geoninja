@@ -1,0 +1,491 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GeoNinja Backend",
+    "version": "0.2.0"
+  },
+  "paths": {
+    "/api/local_params/lookup": {
+      "post": {
+        "tags": [
+          "Local Parameters"
+        ],
+        "summary": "Lookup Local Params",
+        "description": "Resolve local parameters for a given location.\n\nRequest:\n    - `location`: latitude/longitude\n    - `keys`: list of parameter keys to resolve\n\nResponse:\n    Returns one :class:`~geoninja_backend.models.local_param_lookup.ParamLookupResultItem`\n    per requested key. Keys are processed independently; a missing value for one\n    key does not prevent other keys from resolving.\n\nImplementation notes:\n    - Expensive lookups (GLiM/GLHYMPS/raster sampling) are performed at most once\n      per request when any requested key depends on that dataset.\n    - Some keys are currently hard-coded (e.g., heating/cooling period boundaries).",
+        "operationId": "lookup_local_params_api_local_params_lookup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParamLookupRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParamLookupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analysis/run": {
+      "post": {
+        "tags": [
+          "Analysis"
+        ],
+        "summary": "Run Analysis",
+        "description": "Run an analysis for the given parameters.\n\nArgs:\n    req: Request model containing `location` (lat/lng) and a `params` object\n        whose keys correspond to the parameter registry.\n\nReturns:\n    An :class:`~geoninja_backend.models.analysis_run.AnalysisRunResponse`\n    containing the provided location, a `results` object (status + result\n    lists), and an optional `runId`.",
+        "operationId": "run_analysis_api_analysis_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalysisRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalysisRunResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnalysisResultItem": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "title": "AnalysisResultItem",
+        "description": "A single analysis result item.\n\nAttributes:\n    key: Stable identifier for this result.\n    value: Numeric or string value (may be `null`).\n    unit: Unit string (may be `null`), expected to match the contract."
+      },
+      "AnalysisRunRequest": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "params": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Params"
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runid"
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Startedat"
+          },
+          "optInputs": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Optinputs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location",
+          "params"
+        ],
+        "title": "AnalysisRunRequest",
+        "description": "Request model for an analysis run.\n\nAttributes:\n    location: Lat/lng for contextual lookups (and for echoing in responses).\n    params: Input parameters for the analysis. Keys correspond to the shared\n        parameter registry.\n    runId: Optional client-provided run identifier.\n    startedAt: Optional client timestamp (epoch seconds or ms depending on\n        client convention).\n    optInputs: Optional extra inputs that may be `null` per key."
+      },
+      "AnalysisRunResponse": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "results": {
+            "$ref": "#/components/schemas/AnalysisRunResults"
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runid"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location",
+          "results"
+        ],
+        "title": "AnalysisRunResponse",
+        "description": "Response model for an analysis run."
+      },
+      "AnalysisRunResults": {
+        "properties": {
+          "ates_kpi_results": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AnalysisResultItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ates Kpi Results"
+          },
+          "derived_quantities": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AnalysisResultItem"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Derived Quantities"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "AnalysisRunResults",
+        "description": "Results model for an analysis run.\n\nAttributes:\n    ates_kpi_results: List of KPI-type results (may be `null`).\n    derived_quantities: List of derived-quantity results (may be `null`).\n    status: Overall status of the computation.\n    message: Optional human-readable context (typically present on errors)."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LatLng": {
+        "properties": {
+          "lat": {
+            "type": "number",
+            "title": "Lat"
+          },
+          "lng": {
+            "type": "number",
+            "title": "Lng"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "title": "LatLng",
+        "description": "Geographic coordinates.\n\nThis type is used in API requests/responses where a location must be\nprovided by the client.\n\nAttributes:\n    lat: Latitude in decimal degrees.\n    lng: Longitude in decimal degrees."
+      },
+      "ParamLookupRequest": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Keys"
+          },
+          "inputs": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inputs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location",
+          "keys"
+        ],
+        "title": "ParamLookupRequest",
+        "description": "Request payload for local parameter lookup.\n\nAttributes:\n    location:\n        Latitude/longitude at which to resolve local parameters.\n\n    keys:\n        Parameter keys to resolve. Must contain at least one key.\n\n    inputs:\n        Optional additional inputs that can influence lookup behaviour.\n\n        Currently, the following global input is supported:\n\n        - ``year`` (int):\n            Reference year used for year-dependent lookups such as\n            heating/cooling period segmentation (e.g. ``heatPeriodStart``,\n            ``coolPeriodEnd``). If any year-dependent keys are requested,\n            ``inputs[\"year\"]`` must be provided."
+      },
+      "ParamLookupResponse": {
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/LatLng"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ParamLookupResultItem"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "location",
+          "results"
+        ],
+        "title": "ParamLookupResponse",
+        "description": "Response payload for local parameter lookup."
+      },
+      "ParamLookupResultItem": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "missing",
+              "unsupported",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "status"
+        ],
+        "title": "ParamLookupResultItem",
+        "description": "Result for a single requested key."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
