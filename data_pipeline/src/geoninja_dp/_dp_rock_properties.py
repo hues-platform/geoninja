@@ -1,77 +1,12 @@
-"""Rock properties staging step (CSV + manifest).
-
-This pipeline step stages a small reference table of representative bulk rock
-properties keyed by GLiM lithology codes.
-
-The backend uses this lookup table to derive or parameterize analysis inputs
-based on lithology (e.g., density, heat capacity, thermal conductivity).
-
-This step performs no transformation of the tabular data: it copies the source
-CSV into ``backend/data`` and writes a manifest JSON that documents the schema
-and provenance.
-
-Entry point
------------
-The pipeline orchestrator calls :func:`run`:
-
-    run(repo_root: Path, force: bool = False) -> None
-
-Config schema
--------------
-The config file ``data_pipeline/sources/rock_properties/source.yaml`` must
-contain:
-
-.. code-block:: yaml
-
-    files:
-      csv: path/to/rock_properties.csv
-
-The CSV path may be absolute or repository-relative.
-
-Outputs
--------
-Written into ``backend/data``:
-
-- ``rock_properties.csv``
-- ``rock_properties.manifest.json``
-"""
-
-from __future__ import annotations
-
-import json
-import shutil
-from datetime import date
 from pathlib import Path
+
+from data_pipeline.actor import PipelineActor
 
 import yaml
 
-from geoninja_backend import __version__
-
-
 def run(repo_root: Path, force: bool = False) -> None:
-    """Stage the rock properties CSV into the backend data directory.
-
-    Args:
-        repo_root: Repository root directory (used to locate config, inputs, and
-            outputs).
-        force: If ``True``, overwrite outputs even if they already exist.
-
-    Reads:
-        - ``data_pipeline/sources/rock_properties/source.yaml``
-        - The CSV file referenced at ``files.csv``.
-
-    Writes:
-        - ``backend/data/rock_properties.csv`` (byte-for-byte copy of the source)
-        - ``backend/data/rock_properties.manifest.json`` (schema + provenance)
-
-    Behavior:
-        If both output files already exist and ``force`` is ``False``, prints a
-        skip message and returns.
-
-    Raises:
-        FileNotFoundError: If the config file or the declared CSV file is missing.
-        KeyError: If ``source.yaml`` does not contain ``files.csv``.
-    """
+    actor = PipelineActor(repo_root)
+    
     src_yml = repo_root / "data_pipeline" / "sources" / "rock_properties" / "source.yaml"
     backend_data_dir = repo_root / "backend" / "data"
     dst = backend_data_dir / "rock_properties.csv"

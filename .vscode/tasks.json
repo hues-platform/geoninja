@@ -1,0 +1,288 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+
+    // Pre-commit: run
+    {
+      "label": "Pre-commit: run",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "pre_commit", "run", "--all-files", "--show-diff-on-failure"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+
+    // Frontend: typecheck
+    {
+      "label": "Frontend: typecheck (watch)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "typecheck", "--", "--watch"],
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    },
+
+    // Frontend: lint
+    {
+      "label": "Frontend: lint",
+      "dependsOn": ["Frontend: lint (eslint)"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+
+    // Frontend: lint (eslint)
+    {
+      "label": "Frontend: lint (eslint)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "problemMatcher": []
+    },
+
+    // Frontend: test
+    {
+      "label": "Frontend: test",
+      "type": "shell",
+      "command": "npm --prefix frontend run test",
+      "group": "test",
+      "problemMatcher": []
+    },
+
+    // Frontend: run
+    {
+      "label": "Frontend: npm run dev",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": [
+          {
+            "regexp": "^(.*)$",
+            "file": 1,
+            "line": 1,
+            "column": 1,
+            "message": 1
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE v|> vite",
+          "endsPattern": "Local:\\s+http://localhost:5173|ready in\\s+\\d+ms"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+
+    // Frontend: generate OpenAPI types from contract
+    {
+      "label": "Frontend: generate openAPI types from contract",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "openapi-typescript",
+        "${workspaceFolder}/contracts/openapi.json",
+        "-o",
+        "${workspaceFolder}/frontend/src/api/_generated/openapi.types.ts"
+      ],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      }
+    },
+
+    // Backend: Run
+    {
+      "label": "Backend: run",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "uvicorn",
+        "geoninja_backend.main:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": []
+    },
+
+    // Backend: lint
+    {
+      "label": "Backend: lint",
+      "dependsOn": ["Backend: lint (ruff)", "Backend: lint (mypy)"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+
+    // Backend: lint (ruff)
+    {
+      "label": "Backend: lint (ruff)",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "--config",
+        "pyproject.toml",
+        "--output-format=full",
+        "--ignore",
+        "C901"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": []
+    },
+
+    // Backend: lint (mypy)
+    {
+      "label": "Backend: lint (mypy)",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "-m",
+        "mypy",
+        "src",
+        "--config-file",
+        "pyproject.toml",
+        "--junit-xml",
+        "mypy_report.xml"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": []
+    },
+
+    // Backend: test
+    {
+      "label": "Backend: test",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "pytest"],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "problemMatcher": []
+    },
+
+    // Backend: rebase openAPI contract
+    {
+      "label": "Backend: rebase openAPI contract",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "scripts.rebase_openapi_contract"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      }
+    },
+
+    // Data pipeline
+    {
+      "label": "Data pipeline",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "data_pipeline.run"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+
+    // Data pipeline (force)
+    {
+      "label": "Data pipeline (force)",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "data_pipeline.run", "--force"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+
+    // API: Rebase contract + regenerate frontend types
+    {
+      "label": "API: rebase contract & regenerate frontend types",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Backend: rebase openAPI contract",
+        "Frontend: generate openAPI types from contract"
+      ],
+      "problemMatcher": []
+    },
+
+    // Docker: Compose
+    {
+      "label": "Docker compose",
+      "type": "shell",
+      "command": "docker",
+      "args": ["compose", "up", "--build"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    }
+
+  ]
+}

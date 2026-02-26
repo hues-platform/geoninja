@@ -1,5 +1,6 @@
 services:
   backend:
+    container_name: geoninja_back
     build:
       context: .
       dockerfile: ./backend/Dockerfile
@@ -12,6 +13,7 @@ services:
       - ./backend/data:/app/backend/data:ro
 
   frontend:
+    container_name: geoninja_front
     build:
       context: .
       dockerfile: ./frontend/Dockerfile
@@ -19,3 +21,22 @@ services:
       - "8080:80"
     depends_on:
       - backend
+
+  data_pipeline:
+    container_name: geoninja_dp
+    build:
+      context: .
+      dockerfile: data_pipeline/Dockerfile
+    volumes:
+      - ./:/repo
+      - geoninja_dp_work:/dp_work
+    environment:
+      - GEONINJA_REPO_DIR=/repo
+      - GEONINJA_DP_WORK_DIR=/dp_work
+      - GEONINJA_RUNTIME=container
+    working_dir: /repo/data_pipeline
+    command: poetry run python src/geoninja_dp/run.py
+
+volumes:
+  geoninja_dp_work:
+

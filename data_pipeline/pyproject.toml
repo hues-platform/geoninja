@@ -1,0 +1,44 @@
+[project]
+name = "geoninja-data-pipeline"
+version = "0.2.0"
+description = "Data pipeline for GeoNinja, automatically sets up the initial data configuration"
+authors = [
+    {name = "Dennis Beermann",email = "dennis.beermann@empa.ch"}
+]
+requires-python = ">=3.13"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pre-commit (>=4.5.1,<5.0.0)",
+    "ruff (>=0.14.10,<0.15.0)",
+    "mypy (>=1.19.1,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "scipy-stubs (>=1.17.0.2,<2.0.0.0)",
+    "types-requests (>=2.32.4.20260107,<3.0.0.0)"
+]
+
+[tool.poetry]
+packages = [{ include = "geoninja_dp", from = "src" }]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+
