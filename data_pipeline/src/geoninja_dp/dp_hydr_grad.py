@@ -64,6 +64,9 @@ def _stage(src_yml: dict, force: bool) -> None:
     shutil.copyfile(src_tif_aux_xml_file, tar_tif_aux_xml_file)
 
     # Manifest
+    input_files = []
+    for _, fi in src_yml.get("files").items():
+        input_files.append(Path(fi).as_posix())
     manifest = {
         "dataset": {
             "name": src_yml.get("dataset", "HYDR_GRAD_GER"),
@@ -101,7 +104,7 @@ def _stage(src_yml: dict, force: bool) -> None:
             "publisher": src_yml.get("publisher", ""),
             "url": src_yml.get("url", ""),
             "license_note": src_yml.get("license_note", ""),
-            "input_files": [Path(p).as_posix() for p in src_yml.get("files").values()],
+            "input_files": input_files,
         },
         "processing": {
             "pipeline_step": "dp_hydraulic_gradient",
