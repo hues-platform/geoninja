@@ -21,9 +21,11 @@ You can currently set up GeoNinja in one of two ways:
 With Docker running:
 
 ```
-docker compose up --build
+docker compose build
+docker compose up
 ```
 
+The second command will also run the data pipeline which can take up to an hour.
 Once running, the frontend will be available at ```http://localhost:8080```, and the backend at ```http://localhost:8000```.
 
 ### Option 2: Dev Setup (recommended for developers)
@@ -48,9 +50,17 @@ conda activate geoninja
 conda install rasterio gdal -c conda-forge
 ```
 
-#### Backend setup
+#### Data pipeline
 
-Poetry is used on top of the conda environment for dependency management.
+Before GeoNinja is run for the first time, the data pipeline needs to be run once.
+
+```
+cd data_pipeline
+poetry install
+poetry run python -m geoninja_dp.run
+```
+
+#### Backend setup
 
 ```
 cd backend

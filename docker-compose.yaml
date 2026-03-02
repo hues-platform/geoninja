@@ -11,6 +11,9 @@ services:
       - UVICORN_PORT=8000
     volumes:
       - ./backend/data:/app/backend/data:ro
+    depends_on:
+      data_pipeline:
+        condition: service_completed_successfully
 
   frontend:
     container_name: geoninja_front
@@ -20,7 +23,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_completed_successfully
 
   data_pipeline:
     container_name: geoninja_dp
