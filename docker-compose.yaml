@@ -24,7 +24,7 @@ services:
       - "8080:80"
     depends_on:
       backend:
-        condition: service_completed_successfully
+        condition: service_started
 
   data_pipeline:
     container_name: geoninja_dp
@@ -39,7 +39,7 @@ services:
       - GEONINJA_DP_WORK_DIR=/dp_work
       - GEONINJA_RUNTIME=container
     working_dir: /repo
-    command: poetry -C data_pipeline run python -m geoninja_dp.run --force
+    command: poetry -C data_pipeline run python -m geoninja_dp.run
 
 volumes:
   geoninja_dp_work:

@@ -7,7 +7,6 @@ WORKDIR /app
 # - gdal/proj/geos: rasterio runtime dependencies (and sometimes build deps if no wheel matches)
 # - ca-certificates: TLS
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     ca-certificates \
     gdal-bin \
     libgdal-dev \
