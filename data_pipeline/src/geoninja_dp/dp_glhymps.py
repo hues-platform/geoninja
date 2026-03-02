@@ -144,7 +144,7 @@ def _extract(force: bool) -> None:
             )
         os.remove(interior_zip_file)
 
-def _process(src_yaml: dict) -> dict:
+def _process(src_yaml: dict) -> None:
     # Read shapefile
     print(f"[info] Reading shapefile (~2min):\n  {dv_shp_file}")
     gdf = gpd.read_file(
