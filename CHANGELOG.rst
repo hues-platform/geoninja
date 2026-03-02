@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+**0.3.0** (02.03.2026)
+------------------------
+- Data pipelines for GLiM & GLHYMPS now pull from online sources, eliminating the need for local data storage.
+- Data pipelines for rock properties and hydraulic gradient (Germany) datasets still rely on local data.
+
 **0.2.0** (02.02.2026)
 ------------------------
 - Added data pipelines for GLiM, GLHYMPS, rock properties, and hydraulic gradient (Germany) datasets.

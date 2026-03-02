@@ -1,6 +1,6 @@
 [project]
 name = "geoninja_backend"
-version = "0.2.0"
+version = "0.3.0"
 description = "GeoNinja is a tool for retrieving geological and hydrogeological data relevant for underground thermal energy storage (UTES) systems. Given an input point on earth defined by latitude  and longitude, geoninja extracts relevant information based on linearized models and a multitude of precomputed maps. This is the backend handling query requests."
 authors = [
     {name = "Dennis Beermann",email = "dennis.beermann@empa.ch"}

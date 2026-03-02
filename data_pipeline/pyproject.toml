@@ -1,6 +1,6 @@
 [project]
 name = "geoninja-data-pipeline"
-version = "0.2.0"
+version = "0.3.0"
 description = "Data pipeline for GeoNinja, automatically sets up the initial data configuration"
 authors = [
     {name = "Dennis Beermann",email = "dennis.beermann@empa.ch"}
