@@ -65,7 +65,7 @@ def _stage(src_yml: dict, force: bool) -> None:
 
     # Manifest
     input_files = []
-    for _, fi in src_yml.get("files").items():
+    for _, fi in src_yml.get("files", {}).items():
         input_files.append(Path(fi).as_posix())
     manifest = {
         "dataset": {
