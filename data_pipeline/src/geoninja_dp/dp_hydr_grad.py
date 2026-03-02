@@ -115,7 +115,10 @@ def _stage(src_yml: dict, force: bool) -> None:
         },
         "intended_use": {
             "application": "GeoNinja backend",
-            "usage": "Raster sample-at-point lookup for hydraulic gradient; convert to dimensionless; compute v = K * i",
+            "usage": (
+                "Raster sample-at-point lookup for hydraulic gradient; "
+                "convert to dimensionless; compute v = K * i"
+            ),
         },
         "generated": {
             "by": "geoninja data pipeline",

@@ -49,15 +49,36 @@ def _manifest(rp_src_path: Path, rp_tar_path: Path) -> dict:
         "dataset": {
             "name": "Rock properties by lithology",
             "version": __version__,
-            "description": "Representative bulk thermophysical rock properties mapped to GLiM lithology keys for GeoNinja parameter derivation",
+            "description": (
+                "Representative bulk thermophysical rock properties mapped to GLiM lithology keys "
+                "for GeoNinja parameter derivation"),
             "format": "csv",
             "schema": {
                 "primary_key": "litho_key",
                 "fields": [
-                    {"name": "litho_key", "type": "string", "description": "GLiM lithology key (e.g., 'su', 'ss', 'mt')"},
-                    {"name": "density_kg_m3", "type": "number", "unit": "kg/m^3", "description": "Rock density"},
-                    {"name": "spec_heat_cap_j_kgK", "type": "number", "unit": "J/(kg*K)", "description": "Specific heat capacity"},
-                    {"name": "therm_cond_w_mK", "type": "number", "unit": "W/(m*K)", "description": "Thermal conductivity"},
+                    {
+                        "name": "litho_key",
+                        "type": "string",
+                        "description": "GLiM lithology key (e.g., 'su', 'ss', 'mt')"
+                    },
+                    {
+                        "name": "density_kg_m3",
+                        "type": "number",
+                        "unit": "kg/m^3",
+                        "description": "Rock density"
+                    },
+                    {
+                        "name": "spec_heat_cap_j_kgK",
+                        "type": "number",
+                        "unit": "J/(kg*K)",
+                        "description": "Specific heat capacity"
+                    },
+                    {
+                        "name": "therm_cond_w_mK",
+                        "type": "number",
+                        "unit": "W/(m*K)",
+                        "description": "Thermal conductivity"
+                    },
                 ],
             },
         },

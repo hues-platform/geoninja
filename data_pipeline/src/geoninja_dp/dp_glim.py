@@ -187,7 +187,10 @@ def _process(src_yaml: dict) -> None:
 
 def _stage() -> None:
     # Copy process GeoTIFF, Classnames, and manifest to backend data dir
-    print(f"[info] Staging processed data to backend data directory:\n  {tar_tif_file}\n  {tar_txt_file}\n  {tar_mani_file}")
+    print(
+        f"[info] Staging processed data to backend data directory:\n"
+        f"{tar_tif_file}\n  {tar_txt_file}\n  {tar_mani_file}"
+    )
     shutil.copyfile(proc_tif_file, tar_tif_file)
     shutil.copyfile(glim_txt_file, tar_txt_file)
     shutil.copyfile(proc_mani_file, tar_mani_file)

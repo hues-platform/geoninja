@@ -251,6 +251,56 @@
       "problemMatcher": []
     },
 
+    // Data pipeline: lint
+    {
+      "label": "Data pipeline: lint",
+      "dependsOn": ["Data pipeline: lint (ruff)", "Data pipeline: lint (mypy)"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+
+    // Data pipeline: lint (ruff)
+    {
+      "label": "Data pipeline: lint (ruff)",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "--config",
+        "pyproject.toml",
+        "--output-format=full",
+        "--ignore",
+        "C901"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/data_pipeline"
+      },
+      "problemMatcher": []
+    },
+
+    // Data pipeline: lint (mypy)
+    {
+      "label": "Data pipeline: lint (mypy)",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+        "-m",
+        "mypy",
+        "src",
+        "--config-file",
+        "pyproject.toml",
+        "--junit-xml",
+        "mypy_report.xml"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/data_pipeline"
+      },
+      "problemMatcher": []
+    },
+
     // API: Rebase contract + regenerate frontend types
     {
       "label": "API: rebase contract & regenerate frontend types",
