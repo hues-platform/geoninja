@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from collections.abc import Callable
 from pathlib import Path
 
-# from data_pipeline.scripts.dp_glim import run as run_glim
+from geoninja_dp import nav
+from geoninja_dp.dp_glhymps import run as run_glhymps
+from geoninja_dp.dp_glim import run as run_glim
+from geoninja_dp.dp_hydr_grad import run as run_hydr_grad
 from geoninja_dp.dp_rock_properties import run as run_rock_props
-
-# from data_pipeline.scripts.dp_glhymps import run as run_glhymps
-# from data_pipeline.scripts.dp_hydr_grad import run as run_hydr_grad
 
 Step = Callable[[Path, bool], None]
 
 # Ordered list of step callables that together form the full pipeline.
-DATA_PIPELINE = [run_rock_props]
+DATA_PIPELINE = [run_glim, run_rock_props, run_glhymps, run_hydr_grad]
 
 
 def _parse_args() -> argparse.Namespace:
@@ -40,6 +39,7 @@ def run() -> int:
     """
 
     args = _parse_args()
+    nav.BACKEND_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     try:
         for step in DATA_PIPELINE:

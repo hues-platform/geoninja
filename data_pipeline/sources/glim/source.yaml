@@ -2,10 +2,10 @@ dataset: GLiM
 full_name: Global Lithological Map
 publisher: University of Hamburg (UHH)
 url: https://www.geo.uni-hamburg.de/en/geologie/forschung/aquatische-geochemie/glim.html
-license_note: Original GLiM polygons are not redistributable; obtain from UHH GLiM page.
+license: "CC BY 3.0"
 citation: >
   Hartmann, J., & Moosdorf, N. (2012).
   The new global lithological map database GLiM.
   Global Biogeochemical Cycles, 26, GB2034.
-files:
-  parquet: data_pipeline/sources/glim/glim.parquet
+pangea:
+  url: "https://hdl.handle.net/10013/epic.39939.d001"

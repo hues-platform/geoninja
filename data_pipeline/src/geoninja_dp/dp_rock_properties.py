@@ -6,45 +6,42 @@ import yaml
 
 from geoninja_dp import __version__, nav
 
+# Paths
+src_yaml_file = nav.DATA_SOURCES_DIR / "rock_properties" / "source.yaml"
+tar_mani_file = nav.BACKEND_DATA_DIR / "rock_properties.manifest.yaml"
+tar_csv_file = nav.BACKEND_DATA_DIR / "rock_properties.csv"
 
 def run(force: bool) -> None:
-
-    # Destination paths
-    bck_data_dir = nav.BACKEND_DATA_DIR
-    mani_path = bck_data_dir / "rock_properties.manifest.yaml"
-    rp_tar_path = bck_data_dir / "rock_properties.csv"
-
     # Skip if output exists and not forced
-    if mani_path.exists() and rp_tar_path.exists() and not force:
+    if tar_mani_file.exists() and tar_csv_file.exists() and not force:
         print("[skip] Outputs already exist. Use --force to rebuild.")
         return
 
     # Source yaml
-    src_yaml_path = nav.DATA_SOURCES_DIR / "rock_properties" / "source.yaml"
-    if not src_yaml_path.exists():
-        raise FileNotFoundError(f"Missing source config: {src_yaml_path}")
-    src_yaml = yaml.safe_load(src_yaml_path.read_text(encoding="utf-8")) or {} 
-    
+    if not src_yaml_file.exists():
+        raise FileNotFoundError(f"Missing source config: {src_yaml_file}")
+    src_yaml = yaml.safe_load(src_yaml_file.read_text(encoding="utf-8")) or {}
+
     # Rock properties source file
     try:
-        rp_src_path_str = src_yaml["files"]["csv"]
+        rp_src_file_str = src_yaml["files"]["csv"]
     except Exception as e:
         raise KeyError(
             "source.yaml must contain:\n"
             "files:\n"
             "  csv: <path-to-csv>\n"
         ) from e
-    rp_src_path = Path(rp_src_path_str).absolute()
-    if not rp_src_path.exists():
-        raise FileNotFoundError(f"Missing rock properties source file: {rp_src_path}")
+    rp_src_file = nav.REPO_ROOT / Path(rp_src_file_str)
+    if not rp_src_file.exists():
+        raise FileNotFoundError(f"Missing rock properties source file: {rp_src_file}")
 
     # Copy rock properties CSV to backend data directory
-    shutil.copyfile(rp_src_path, rp_tar_path)
+    shutil.copyfile(rp_src_file, tar_csv_file)
 
     # Manifest
-    mni = _manifest(rp_src_path, rp_tar_path)
-    mani_path.write_text(yaml.dump(mni), encoding="utf-8")
-    print(f"[ok] Copied rock properties CSV:\n  {rp_src_path}\n  -> {rp_tar_path}")
+    mni = _manifest(rp_src_file, tar_csv_file)
+    tar_mani_file.write_text(yaml.dump(mni), encoding="utf-8")
+    print(f"[ok] Copied rock properties CSV:\n  {rp_src_file}\n  -> {tar_csv_file}")
 
 
 def _manifest(rp_src_path: Path, rp_tar_path: Path) -> dict:

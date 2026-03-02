@@ -24,7 +24,7 @@ dataset:
   version: 0.2.0
 generated:
   by: geoninja data pipeline
-  date: '2026-02-26'
+  date: '2026-03-02'
 intended_use:
   application: GeoNinja backend
   usage:

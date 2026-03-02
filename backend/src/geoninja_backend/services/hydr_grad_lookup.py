@@ -21,8 +21,8 @@ Units
 Raster values are assumed to be stored as *percent* slope (e.g., 5 means 5%).
 The lookup converts to a dimensionless hydraulic gradient by dividing by 100.
 
-Caching + thread safety
-----------------------
+Caching
+--------
 The raster dataset handle is cached via ``lru_cache(maxsize=1)`` for performance.
 Rasterio dataset reads are not guaranteed to be thread-safe, so sampling is
 serialized with a module-level lock.

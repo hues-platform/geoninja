@@ -22,16 +22,16 @@ def test_lookup_returns_rocktype_and_rockprops():
 
     # rockType
     assert by_key["rockType"]["status"] == "ok"
-    assert by_key["rockType"]["value"] == "Unconsolidated Sediments"
+    assert by_key["rockType"]["value"] == "Mixed Sedimentary Rocks"
     # rockDensity
     assert by_key["rockDensity"]["status"] == "ok"
-    assert by_key["rockDensity"]["value"] == 2050.0
+    assert by_key["rockDensity"]["value"] == 2460.0
     # rockSpecHeatCap
     assert by_key["rockSpecHeatCap"]["status"] == "ok"
-    assert by_key["rockSpecHeatCap"]["value"] == 961.0
+    assert by_key["rockSpecHeatCap"]["value"] == 906.5
     # rockThermCond
     assert by_key["rockThermCond"]["status"] == "ok"
-    assert by_key["rockThermCond"]["value"] == 1.39
+    assert by_key["rockThermCond"]["value"] == 2.4
 
 
 @pytest.mark.glhymps

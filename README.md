@@ -104,10 +104,11 @@ Make sure that the ``PYTHON_VERSION`` you choose is compatible with the current 
 6. Run any of the main scripts in the examples folder to verify the installation.
 
 ## Documentation
+tbd
 
 ## Third-party redistribution
-- GLiM
-- GLHYMPS
+- [GLiM](https://www.geo.uni-hamburg.de/en/geologie/forschung/aquatische-geochemie/glim.html/)
+- [GLHYMPS](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/DLGXYO/)
 - Hydraulic gradient (?)
 
 ## Project Info
@@ -115,8 +116,6 @@ Make sure that the ``PYTHON_VERSION`` you choose is compatible with the current 
 - Developers: Dennis Beermann
 - Programming Languages: Python, TypeScript
 - Contributors: Kathrin Menberg, Robin Mutschler.
-
-## How to Cite
 
 ## Project Status
 In development (see also CHANGELOG.rst)

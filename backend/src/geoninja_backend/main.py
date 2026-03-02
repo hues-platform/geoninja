@@ -32,8 +32,9 @@ from fastapi import FastAPI
 from geoninja_backend import __version__
 from geoninja_backend.api.router import api_router
 from geoninja_backend.services.glhymps_lookup import load_glhymps_gdf
-from geoninja_backend.services.glim_lookup import load_glim_gdf
+from geoninja_backend.services.glim_lookup import load_glim_data
 from geoninja_backend.services.hydr_grad_lookup import load_hydr_grad_raster
+from geoninja_backend.services.rock_properties import load_rock_properties_by_litho_key
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,9 +52,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         The ``app`` argument is provided by FastAPI. It is not currently used,
         but kept in the signature to match the expected lifespan protocol.
     """
-    load_glim_gdf()
+    load_glim_data()
     load_glhymps_gdf()
     load_hydr_grad_raster()
+    load_rock_properties_by_litho_key()
     yield
 
 

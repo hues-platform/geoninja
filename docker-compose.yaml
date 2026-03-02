@@ -34,9 +34,8 @@ services:
       - GEONINJA_REPO_DIR=/repo
       - GEONINJA_DP_WORK_DIR=/dp_work
       - GEONINJA_RUNTIME=container
-    working_dir: /repo/data_pipeline
-    command: poetry run python src/geoninja_dp/run.py
+    working_dir: /repo
+    command: poetry -C data_pipeline run python -m geoninja_dp.run --force
 
 volumes:
   geoninja_dp_work:
-
