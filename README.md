@@ -21,9 +21,11 @@ You can currently set up GeoNinja in one of two ways:
 With Docker running:
 
 ```
-docker compose up --build
+docker compose build
+docker compose up
 ```
 
+The second command will also run the data pipeline which can take up to an hour.
 Once running, the frontend will be available at ```http://localhost:8080```, and the backend at ```http://localhost:8000```.
 
 ### Option 2: Dev Setup (recommended for developers)
@@ -48,9 +50,17 @@ conda activate geoninja
 conda install rasterio gdal -c conda-forge
 ```
 
-#### Backend setup
+#### Data pipeline
 
-Poetry is used on top of the conda environment for dependency management.
+Before GeoNinja is run for the first time, the data pipeline needs to be run once.
+
+```
+cd data_pipeline
+poetry install
+poetry run python -m geoninja_dp.run
+```
+
+#### Backend setup
 
 ```
 cd backend
@@ -104,10 +114,11 @@ Make sure that the ``PYTHON_VERSION`` you choose is compatible with the current 
 6. Run any of the main scripts in the examples folder to verify the installation.
 
 ## Documentation
+tbd
 
 ## Third-party redistribution
-- GLiM
-- GLHYMPS
+- [GLiM](https://www.geo.uni-hamburg.de/en/geologie/forschung/aquatische-geochemie/glim.html/)
+- [GLHYMPS](https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/DLGXYO/)
 - Hydraulic gradient (?)
 
 ## Project Info
@@ -115,8 +126,6 @@ Make sure that the ``PYTHON_VERSION`` you choose is compatible with the current 
 - Developers: Dennis Beermann
 - Programming Languages: Python, TypeScript
 - Contributors: Kathrin Menberg, Robin Mutschler.
-
-## How to Cite
 
 ## Project Status
 In development (see also CHANGELOG.rst)

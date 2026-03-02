@@ -15,12 +15,12 @@ Data sources
 ------------
 This endpoint combines multiple local data sources:
 
-- GLiM (vector polygons): lithology classification used for `rockType` and as an
+- GLiM (raster data): lithology classification used for `rockType` and as an
     index into the rock-properties table.
 - Rock properties (CSV lookup): maps GLiM lithology keys to representative
     `rockDensity`, `rockSpecHeatCap`, and `rockThermCond`.
 - GLHYMPS (vector polygons): used for `hydrCond` lookup.
-- Hydraulic gradient raster: used for `hydrGrad` lookup.
+- Hydraulic gradient (raster data): used for `hydrGrad` lookup.
 
 Contract note
 -------------

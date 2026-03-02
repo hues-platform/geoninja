@@ -83,11 +83,58 @@ jobs:
           npm run lint
           npm run format:check
 
+  lint_dp:
+    name: Lint (data pipeline)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: data_pipeline
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Poetry
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          pip install poetry
+
+      - name: Install deps
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: "true"
+          POETRY_NO_INTERACTION: "1"
+        run: poetry install --with dev
+
+      - name: Ruff
+        run: >
+          poetry run ruff check src
+          --config pyproject.toml
+          --output-format=full
+          --output-file=ruff_report.txt
+          --ignore C901
+
+      - name: Mypy
+        run: poetry run mypy src --config-file pyproject.toml --junit-xml mypy_report.xml
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-lint-reports
+          path: |
+            backend/ruff_report.txt
+            backend/mypy_report.xml
+          retention-days: 7
+
   test_backend:
     name: Test (backend)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [lint_backend, lint_frontend]
+    needs: [lint_backend]
     defaults:
       run:
         working-directory: backend
@@ -129,7 +176,7 @@ jobs:
     name: Test (frontend)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [lint_backend, lint_frontend]
+    needs: [lint_frontend]
     defaults:
       run:
         working-directory: frontend
@@ -163,7 +210,7 @@ jobs:
     name: Build (frontend)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [test_backend, test_frontend]
+    needs: [test_frontend]
     defaults:
       run:
         working-directory: frontend

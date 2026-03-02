@@ -9,5 +9,5 @@ stored_unit: percent
 scale_factor_to_dimensionless: 0.01
 nodata: -9999
 files:
-  geotiff: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif
-  gdal_aux_xml: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml
+  tif: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif
+  tif_aux_xml: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml

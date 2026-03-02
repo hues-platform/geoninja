@@ -95,4 +95,7 @@ Desktop.ini
 *.shx
 *.tif
 *.tif.aux.xml
-data_pipeline/sources/*/_cache/*
+backend/data/*
+data_pipeline/work
+!data_pipeline/sources/hydr_grad/hydr_grad_ger.tif
+!data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml

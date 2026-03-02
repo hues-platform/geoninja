@@ -19,5 +19,5 @@
 **/venv
 
 # Large datasets / artifacts
-backend/data/glim.parquet
 **/*.parquet
+**/*.tif

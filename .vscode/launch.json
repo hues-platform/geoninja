@@ -1,0 +1,71 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        // Python: Current File
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+        // Backend: Launch
+        {
+            "name": "Backend: Launch",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "cwd": "${workspaceFolder}/backend",
+            "args": [
+                "geoninja_backend.main:app",
+                "--reload",
+                "--host", "127.0.0.1",
+                "--port", "8000"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "console": "integratedTerminal"
+        },
+
+        // Backend: Tests
+        {
+            "name": "Backend: Pytest",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "cwd": "${workspaceFolder}/backend",
+            "args": [
+                "tests",
+                "-s"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+
+        // Data pipeline
+        {
+            "name": "Data pipeline",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "geoninja_dp.run",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+
+        // Data pipeline (forced)
+        {
+            "name": "Data pipeline (forced)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "geoninja_dp.run",
+            "args": ["--force"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

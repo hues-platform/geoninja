@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuite errors="0" failures="1" name="mypy" skips="0" tests="1" time="4.900">
+  <testcase classname="mypy" file="mypy" line="1" name="mypy-py3_13-win32" time="4.900">
+    <failure message="mypy produced messages">src\geoninja_dp\dp_rock_properties.py:5: error: Library stubs not installed for "yaml"  [import-untyped]
+src\geoninja_dp\dp_hydr_grad.py:5: error: Skipping analyzing "rasterio": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+src\geoninja_dp\dp_hydr_grad.py:6: error: Library stubs not installed for "yaml"  [import-untyped]
+src\geoninja_dp\dp_hydr_grad.py:104: error: Item "None" of "Any | None" has no attribute "values"  [union-attr]
+src\geoninja_dp\dp_glim.py:6: error: Skipping analyzing "rasterio": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+src\geoninja_dp\dp_glim.py:8: error: Library stubs not installed for "yaml"  [import-untyped]
+src\geoninja_dp\dp_glim.py:9: error: Skipping analyzing "rasterio.transform": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+src\geoninja_dp\dp_glhymps.py:5: error: Library stubs not installed for "geopandas"  [import-untyped]
+src\geoninja_dp\dp_glhymps.py:5: note: Hint: "python3 -m pip install types-geopandas"
+src\geoninja_dp\dp_glhymps.py:5: note: (or run "mypy --install-types" to install all missing stub packages)
+src\geoninja_dp\dp_glhymps.py:5: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+src\geoninja_dp\dp_glhymps.py:8: error: Library stubs not installed for "yaml"  [import-untyped]
+src\geoninja_dp\dp_glhymps.py:8: note: Hint: "python3 -m pip install types-PyYAML"
+src\geoninja_dp\dp_glhymps.py:10: error: Library stubs not installed for "tqdm"  [import-untyped]
+src\geoninja_dp\dp_glhymps.py:10: note: Hint: "python3 -m pip install types-tqdm"
+src\geoninja_dp\dp_glhymps.py:147: error: Missing return statement  [return]</failure>
+  </testcase>
+</testsuite>

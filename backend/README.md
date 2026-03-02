@@ -41,7 +41,7 @@ Some endpoints depend on datasets staged into `backend/data/` by the data
 pipeline (at the repo root):
 
 - GLHYMPS (vector polygons)
-- GLiM (vector polygons)
+- GLiM (raster)
 - Hydr. gradient (raster)
 - Rock properties (CSV lookup table)
 
@@ -49,8 +49,6 @@ If lookups return “no data”, ensure the pipeline has been run at least once:
 
 - VS Code task: `Data pipeline`
 - Or: `python -m data_pipeline.run`
-
-## Contracts and OpenAPI workflow
 
 ### OpenAPI snapshot
 
