@@ -134,7 +134,7 @@ jobs:
     name: Test (backend)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [lint_backend, lint_frontend]
+    needs: [lint_backend]
     defaults:
       run:
         working-directory: backend
@@ -176,7 +176,7 @@ jobs:
     name: Test (frontend)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [lint_backend, lint_frontend]
+    needs: [lint_frontend]
     defaults:
       run:
         working-directory: frontend
