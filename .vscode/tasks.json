@@ -222,7 +222,7 @@
       "label": "Data pipeline",
       "type": "shell",
       "command": "${command:python.interpreterPath}",
-      "args": ["-m", "data_pipeline.run"],
+      "args": ["-m", "geoninja_dp.run"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -239,7 +239,7 @@
       "label": "Data pipeline (force)",
       "type": "shell",
       "command": "${command:python.interpreterPath}",
-      "args": ["-m", "data_pipeline.run", "--force"],
+      "args": ["-m", "geoninja_dp.run", "--force"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -332,7 +332,75 @@
         "kind": "build",
         "isDefault": false
       }
-    }
+    },
 
+    // Sphinx: Build HTML
+    {
+      "label": "Sphinx: Build HTML",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": [
+          "-m",
+          "sphinx",
+          "-M",
+          "html",
+          "docs/source",
+          "public"
+      ],
+      "options": {
+          "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+          "reveal": "always",
+          "panel": "shared",
+          "clear": true
+      }
+    },
+    {
+      "label": "Sphinx: Build PDF (latexpdf)",
+      "type": "shell",
+      "command": "poetry run sphinx-build",
+      "args": [
+          "-M",
+          "latexpdf",
+          "docs/source",
+          "public"
+      ],
+      "options": {
+          "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+          "reveal": "always",
+          "panel": "shared",
+          "clear": true
+      }
+    },
+
+    // Sphinx: Build PDf
+    {
+      "label": "Sphinx: Build PDF (latexpdf)",
+      "type": "shell",
+      "command": "sphinx-build",
+      "args": [
+          "-M",
+          "latexpdf",
+          "docs/source",
+          "public"
+      ],
+      "options": {
+          "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+          "reveal": "always",
+          "panel": "shared",
+          "clear": true
+      }
+    }
   ]
 }

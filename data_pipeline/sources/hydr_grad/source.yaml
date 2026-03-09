@@ -1,13 +1,8 @@
-dataset: hydr_grad_ger
+dataset: hydr_grad
 full_name: Hydraulic gradient map for Germany
-publisher:
-url: null
-license_note:
-citation:
+publisher: Zenodo
+url: https://zenodo.org/records/18667244
+license: "CC BY 4.0"
 crs: EPSG:3857
-stored_unit: percent
-scale_factor_to_dimensionless: 0.01
-nodata: -9999
-files:
-  tif: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif
-  tif_aux_xml: data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml
+zenodo:
+  url: "https://zenodo.org/api/records/18667244/files-archive"

@@ -1,19 +1,22 @@
+import os
 import shutil
 from datetime import date
-from pathlib import Path
 
-import rasterio
+import requests
 import yaml
 
 from geoninja_dp import nav
 
 # Paths
 src_yml_file = nav.DATA_SOURCES_DIR / "hydr_grad" / "source.yaml"
-src_tif_file = nav.DATA_SOURCES_DIR / "hydr_grad" / "hydr_grad_ger.tif"
-src_tif_aux_xml_file = nav.DATA_SOURCES_DIR / "hydr_grad" / "hydr_grad_ger.tif.aux.xml"
-tar_tif_file = nav.BACKEND_DATA_DIR / "hydr_grad_ger.tif"
-tar_tif_aux_xml_file = nav.BACKEND_DATA_DIR / "hydr_grad_ger.tif.aux.xml"
-tar_mani_file = nav.BACKEND_DATA_DIR / "hydr_grad_ger.manifest.yaml"
+work_dir = nav.get_dp_work_dir() / "hydr_grad"
+cache_dir = work_dir / "_cache"
+zenodo_zip_dl_file = cache_dir / "hydr_grad_zenodo.zip"
+hydr_grad_tif_file = cache_dir / "hydr_grad_ger.tif"
+hydr_grad_xml_file = cache_dir / "hydr_grad_ger.tif.aux.xml"
+tar_mani_file = nav.BACKEND_DATA_DIR / "hydr_grad.manifest.yaml"
+tar_tif_file = nav.BACKEND_DATA_DIR / "hydr_grad.tif"
+tar_xml_file = nav.BACKEND_DATA_DIR / "hydr_grad.tif.aux.xml"
 
 def run(force: bool) -> None:
     # Skip if output exists and not forced
@@ -24,109 +27,112 @@ def run(force: bool) -> None:
     # Source yaml
     if not src_yml_file.exists():
         raise FileNotFoundError(f"Missing source config: {src_yml_file}")
-    src_yml = yaml.safe_load(src_yml_file.read_text(encoding="utf-8")) or {}
+    src_yaml = yaml.safe_load(src_yml_file.read_text(encoding="utf-8")) or {}
+
+    # Work directory
+    work_dir.mkdir(parents=True, exist_ok=True)
 
     # Pipeline steps
-    _stage(src_yml, force)
+    _download(src_yaml, force)
+    _extract(src_yaml, force)
+    _stage()
 
+def _download(src_yaml: dict, force: bool) -> None:
+    # Read Zenodo info from source yaml
+    zenodo = src_yaml.get("zenodo")
+    if not isinstance(zenodo, dict):
+        raise KeyError(
+            "source.yaml must contain:\n"
+            "zenodo:\n"
+            "  url: <Zenodo url>\n"
+        )
 
-def _stage(src_yml: dict, force: bool) -> None:
-    # Skip if output exists and not forced
-    if tar_tif_file.exists() and tar_mani_file.exists() and not force:
-        print("[skip] Outputs already exist. Use --force to rebuild.")
+    # Handle paths and folders in cache directory
+    url = zenodo.get("url")
+    if not url:
+        raise KeyError("zenodo mapping must contain 'url'")
+
+    if force and cache_dir.exists():
+        shutil.rmtree(cache_dir)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    zip_path = zenodo_zip_dl_file
+    if not force and zip_path.exists():
+        print(f"[skip] Zenodo download already exists: {zip_path}")
         return
 
-    # Read raster metadata via rasterio
-    with rasterio.open(src_tif_file) as ds:
-        # Basic raster properties
-        width = ds.width
-        height = ds.height
-        count = ds.count
-        dtype = ds.dtypes[0] if ds.dtypes else None
-        nodata = ds.nodata
-        crs = ds.crs.to_string() if ds.crs else None
-        transform = ds.transform
-        pixel_size_x = float(transform.a)
-        pixel_size_y = float(transform.e)  # negative for north-up rasters
-        bounds = ds.bounds
+    # Download zip
+    print(f"[info] Downloading hydraulic gradient data to {zip_path} from {url}")
+    with requests.get(url, stream=True, timeout=300) as r:
+        try:
+            r.raise_for_status()
+        except requests.HTTPError as e:
+            if r.status_code in (401, 403):
+                hint = (
+                    "\n[hint] This dataset or some files may be restricted."
+                )
+            raise RuntimeError(
+                f"Zenodo download failed ({r.status_code}) from {url}.{hint}"
+            ) from e
+        chunk_size = 1024 * 1024
+        with open(zip_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+    print(f"[ok] Downloaded hydraulic gradient data to {zip_path}")
 
-        # Min/max (cheap-ish; uses overviews if present, otherwise reads full band)
-        band1 = ds.read(1, masked=True)
-        # Convert to python scalars for JSON
-        data_min = float(band1.min()) if band1.count() > 0 else None
-        data_max = float(band1.max()) if band1.count() > 0 else None
-        valid_fraction = float(band1.count() / (width * height)) if width and height else None
 
-    # Copy source files to backend data dir
-    print(f"[info] Copying GeoTIFF:\n  {src_tif_file}\n  -> {tar_tif_file}")
-    shutil.copyfile(src_tif_file, tar_tif_file)
-    print(f"[info] Copying GDAL aux XML:\n  {src_tif_aux_xml_file}\n  -> {tar_tif_aux_xml_file}")
-    shutil.copyfile(src_tif_aux_xml_file, tar_tif_aux_xml_file)
+def _extract(src_yaml: dict, force: bool) -> None:
+    # Extract zip
+    expected_files = [hydr_grad_tif_file, hydr_grad_xml_file]
+    if not force and all(fi.exists() for fi in expected_files):
+        print("[skip] Zenodo zip already extracted with expected files:")
+        for fi in expected_files:
+            print(f"  {fi}")
+        return
+    else:
+        print(f"[info] Extracting hydraulic gradient data zip:\n {zenodo_zip_dl_file}")
+        shutil.unpack_archive(zenodo_zip_dl_file, cache_dir)
+        missing_files = [fi for fi in expected_files if not fi.exists()]
+        if missing_files:
+            raise FileNotFoundError(
+                f"Expected files not found in Zenodo ZIP: {missing_files}"
+            )
+        os.remove(zenodo_zip_dl_file)
 
-    # Manifest
-    input_files = []
-    for _, fi in src_yml.get("files", {}).items():
-        input_files.append(Path(fi).as_posix())
-    manifest = {
-        "dataset": {
-            "name": src_yml.get("dataset", "HYDR_GRAD_GER"),
-            "description": "Hydraulic gradient raster prepared for GeoNinja lookup",
-            "format": "geotiff",
-            "data_type": "raster",
-            "bands": count,
-            "dtype": dtype,
-            "crs": crs or src_yml.get("crs", ""),
-            "width": width,
-            "height": height,
-            "pixel_size": {
-                "x": pixel_size_x,
-                "y": pixel_size_y,
-                "unit": "m",
+        # Save manifest
+        proc_manifest = {
+            "dataset": {
+                "name": "Hydraulic gradient",
+                "description": "Hydraulic gradient raster map for Germany.",
+                "format": "geotiff",
+                "geometry": "raster",
+                "crs": "EPSG:3857",
             },
-            "bounds": {
-                "left": bounds.left,
-                "bottom": bounds.bottom,
-                "right": bounds.right,
-                "top": bounds.top,
-                "crs": crs or src_yml.get("crs", ""),
+            "source": {
+                "origin": src_yaml.get("full_name", ""),
+                "citation": src_yaml.get("citation", ""),
+                "license": src_yaml.get("license", ""),
+                "url": src_yaml.get("url", ""),
             },
-            "nodata": nodata if nodata is not None else src_yml.get("nodata", None),
-            "value_range": {"min": data_min, "max": data_max},
-            "valid_fraction": valid_fraction,
-            "quantity": src_yml.get("quantity", "hydraulic_gradient"),
-            "stored_unit": src_yml.get("stored_unit", "percent"),
-            "scale_factor_to_dimensionless": src_yml.get("scale_factor_to_dimensionless", 0.01),
-            "notes": "Values assumed to be percent slope (%). Convert to dimensionless by * 0.01 before Darcy law.",
-        },
-        "source": {
-            "origin": src_yml.get("full_name", ""),
-            "citation": src_yml.get("citation", ""),
-            "publisher": src_yml.get("publisher", ""),
-            "url": src_yml.get("url", ""),
-            "license_note": src_yml.get("license_note", ""),
-            "input_files": input_files,
-        },
-        "processing": {
-            "pipeline_step": "dp_hydraulic_gradient",
-            "action": "copy",
-            "from": src_tif_file.as_posix(),
-            "to": tar_tif_file.as_posix(),
-            "modifications": (
-                "no reprojection; keep EPSG:3857; "
-                "assume stored values are percent; provide scale_factor_to_dimensionless=0.01"
-            ),
-        },
-        "intended_use": {
-            "application": "GeoNinja backend",
-            "usage": (
-                "Raster sample-at-point lookup for hydraulic gradient; "
-                "convert to dimensionless; compute v = K * i"
-            ),
-        },
-        "generated": {
-            "by": "geoninja data pipeline",
-            "date": date.today().isoformat(),
-        },
-    }
-    tar_mani_file.write_text(yaml.dump(manifest, sort_keys=False), encoding="utf-8")
-    print(f"[info] Wrote manifest:\n  {tar_mani_file}")
+            "intended_use": {
+                "application": "GeoNinja backend",
+                "usage": "Raster sample-at-point lookup for hydraulic gradient",
+            },
+            "generated": {
+                "by": "geoninja data pipeline",
+                "date": date.today().isoformat(),
+            },
+        }
+        tar_mani_file.write_text(yaml.dump(proc_manifest), encoding="utf-8")
+
+
+def _stage() -> None:
+    # Copy process GeoTIFF, Classnames, and manifest to backend data dir
+    print(
+        f"[info] Staging data to backend data directory:\n"
+        f"{tar_tif_file}\n  {tar_tif_file}\n  {tar_mani_file}"
+    )
+    shutil.copyfile(hydr_grad_tif_file, tar_tif_file)
+    shutil.copyfile(hydr_grad_xml_file, tar_xml_file)
+    os.remove(hydr_grad_tif_file)
+    os.remove(hydr_grad_xml_file)

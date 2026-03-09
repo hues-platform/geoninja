@@ -33,11 +33,11 @@
       "unit": "J/(m³·K)"
     },
     {
-      "key": "heatingDays",
+      "key": "heatingDuration",
       "unit": "d"
     },
     {
-      "key": "coolingDays",
+      "key": "coolingDuration",
       "unit": "d"
     },
     {

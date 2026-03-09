@@ -171,8 +171,8 @@ def perform_analysis(params: dict[str, float | str]) -> AnalysisRunResults:
         _derived_quantity_item("retardFact", retard_fact),
         _derived_quantity_item("thermFrontVelo", therm_front_velo),
         _derived_quantity_item("storativity", storativity),
-        _derived_quantity_item("heatingDays", heat_duration_days),
-        _derived_quantity_item("coolingDays", cool_duration_days),
+        _derived_quantity_item("heatingDuration", heat_duration_days),
+        _derived_quantity_item("coolingDuration", cool_duration_days),
     ]
 
     return AnalysisRunResults(

@@ -8,7 +8,7 @@ Data source
 The GeoTIFF is staged by the data pipeline step
 ``data_pipeline.scripts.dp_hydr_grad`` and is expected at:
 
-    ``backend/data/hydr_grad_ger.tif``
+    ``backend/data/hydr_grad.tif``
 
 Coordinate reference system
 ---------------------------
@@ -40,7 +40,7 @@ from pyproj import CRS, Transformer
 
 log = logging.getLogger(__name__)
 
-_HYDRGRAD_GER_FILE = (Path(__file__).parents[3] / "data" / "hydr_grad_ger.tif").resolve()
+_HYDRGRAD_GER_FILE = (Path(__file__).parents[3] / "data" / "hydr_grad.tif").resolve()
 
 _EXPECTED_RASTER_CRS = CRS.from_epsg(3857)
 _INPUT_CRS = CRS.from_epsg(4326)
@@ -65,7 +65,7 @@ class HydrGradLookupResult:
 
 
 def lookup_hydr_grad_at(lat: float, lng: float) -> HydrGradLookupResult:
-    """Lookup hydraulic gradient at given latitude and longitude using hydr_grad_ger raster.
+    """Lookup hydraulic gradient at given latitude and longitude using hydr_grad raster.
 
     Parameters
     ----------
@@ -140,38 +140,38 @@ def load_hydr_grad_raster():
         close the returned dataset.
     """
     if not _HYDRGRAD_GER_FILE.exists():
-        log.critical("HydrGrad GER raster not found at %s", _HYDRGRAD_GER_FILE)
-        raise FileNotFoundError(f"HydrGrad GER raster not found at {_HYDRGRAD_GER_FILE}")
+        log.critical("HydrGrad raster not found at %s", _HYDRGRAD_GER_FILE)
+        raise FileNotFoundError(f"HydrGrad raster not found at {_HYDRGRAD_GER_FILE}")
 
-    log.info("Loading HydrGrad GER raster from %s", _HYDRGRAD_GER_FILE)
+    log.info("Loading HydrGrad raster from %s", _HYDRGRAD_GER_FILE)
     t0 = time.time()
 
     ds = rasterio.open(_HYDRGRAD_GER_FILE)
 
     if ds.crs is None:
         ds.close()
-        log.critical("No CRS found in hydr_grad_ger raster")
-        raise ValueError("No CRS found in hydr_grad_ger raster")
+        log.critical("No CRS found in hydr_grad raster")
+        raise ValueError("No CRS found in hydr_grad raster")
     if not CRS.from_user_input(ds.crs).equals(_EXPECTED_RASTER_CRS):
         # We could support any CRS via transformer, but for your stack it’s better to fail loudly.
         ds.close()
         log.critical(
-            "Unexpected CRS in hydr_grad_ger raster: %s (expected %s)",
+            "Unexpected CRS in hydr_grad raster: %s (expected %s)",
             ds.crs,
             _EXPECTED_RASTER_CRS,
         )
-        raise ValueError(f"Unexpected CRS in hydr_grad_ger raster: {ds.crs} (expected EPSG:3857)")
+        raise ValueError(f"Unexpected CRS in hydr_grad raster: {ds.crs} (expected EPSG:3857)")
     # Basic sanity: single band raster expected
     if ds.count < 1:
         ds.close()
-        log.critical("hydr_grad_ger raster has no bands")
-        raise ValueError("hydr_grad_ger raster has no bands")
+        log.critical("hydr_grad raster has no bands")
+        raise ValueError("hydr_grad raster has no bands")
 
     # Pre-build transformer (lon/lat -> raster CRS)
     to_raster = Transformer.from_crs(_INPUT_CRS, _EXPECTED_RASTER_CRS, always_xy=True)
 
     log.info(
-        "HydrGrad GER raster loaded in %.2f seconds from {%s}",
+        "HydrGrad raster loaded in %.2f seconds from {%s}",
         time.time() - t0,
         _HYDRGRAD_GER_FILE,
     )

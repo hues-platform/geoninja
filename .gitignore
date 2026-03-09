@@ -56,6 +56,7 @@ frontend/junit.xml
 
 docs/_build/
 _site/
+public/
 
 ###############################################################################
 # VS Code
@@ -97,5 +98,5 @@ Desktop.ini
 *.tif.aux.xml
 backend/data/*
 data_pipeline/work
-!data_pipeline/sources/hydr_grad/hydr_grad_ger.tif
-!data_pipeline/sources/hydr_grad/hydr_grad_ger.tif.aux.xml
+!data_pipeline/sources/hydr_grad/hydr_grad.tif
+!data_pipeline/sources/hydr_grad/hydr_grad.tif.aux.xml

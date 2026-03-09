@@ -120,8 +120,8 @@ def perform_period_seg(lat: float, lng: float, year: int) -> PeriodSegmentationR
     daily_class = _smooth_daily_class(daily_class, window_days=7)
 
     # Extract seasons
-    heat_period = _extract_season(daily_class, target="heat", max_gap_days=7, min_season_days=14)
-    cool_period = _extract_season(daily_class, target="cool", max_gap_days=14, min_season_days=14, exclude=heat_period)
+    heat_period = _extract_season(daily_class, target="heat", max_gap_days=7)
+    cool_period = _extract_season(daily_class, target="cool", max_gap_days=14, exclude=heat_period)
 
     # Return
     return PeriodSegmentationResult(
@@ -137,7 +137,6 @@ def _extract_season(
     daily_class: dict[date, OperClass],
     target: OperClass,
     max_gap_days: int,
-    min_season_days: int,
     exclude: TimePeriod | None = None,
 ) -> TimePeriod | None:
     """
@@ -157,8 +156,6 @@ def _extract_season(
     max_gap_days : int
         Maximum number of consecutive non-target days allowed between
         runs to merge them into a single season.
-    min_season_days : int
-        Minimum required duration (in days) for a valid season.
     exclude : TimePeriod | None, optional
         If provided, days within this period are ignored when extracting
         the season (used to prevent overlap between heating and cooling).
@@ -240,11 +237,6 @@ def _extract_season(
 
         # Update runs for new iteration
         runs = new_runs
-
-    # Filter out runs shorter than min_season_days
-    runs = [run for run in runs if run.duration_days() >= min_season_days]
-    if not runs:
-        return None
 
     # Select longest run and return
     best_run = max(runs, key=lambda r: r.duration_days())

@@ -36,8 +36,8 @@ DerivedQuantityKey = Literal[
     "fluidVolHeatCap",
     "rockVolHeatCap",
     "aqVolHeatCap",
-    "heatingDays",
-    "coolingDays",
+    "heatingDuration",
+    "coolingDuration",
     "maxPumpRate",
     "storativity",
 ]
@@ -92,10 +92,10 @@ DERIVED_QUANTITY_REGISTRY: dict[DerivedQuantityKey, AnalysisResultDef] = {
     "aqVolHeatCap": {
         "unit": "J/(m³·K)",
     },
-    "heatingDays": {
+    "heatingDuration": {
         "unit": "d",
     },
-    "coolingDays": {
+    "coolingDuration": {
         "unit": "d",
     },
     "storativity": {

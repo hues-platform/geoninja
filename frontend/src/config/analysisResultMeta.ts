@@ -101,17 +101,17 @@ export const ANALYSIS_RESULT_META: Record<string, AnalysisResultMeta> = {
     displayUnit: "-",
   },
 
-  heatingDays: {
-    key: "heatingDays",
-    name: "Heating days",
-    description: "Number of days the aquifer spends in heating mode.",
+  heatingDuration: {
+    key: "heatingDuration",
+    name: "Heating duration",
+    description: "Duration of the heating period.",
     displayUnit: "d",
   },
 
-  coolingDays: {
-    key: "coolingDays",
-    name: "Cooling days",
-    description: "Number of days the aquifer spends in cooling mode.",
+  coolingDuration: {
+    key: "coolingDuration",
+    name: "Cooling duration",
+    description: "Duration of the cooling period.",
     displayUnit: "d",
   },
 
