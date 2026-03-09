@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+**1.0.0** (09.03.2026)
+------------------------
+- Data pipelines for hydraulic gradient map now pulls from online sources, eliminating the need for local data storage.
+- Added documentation.
+
 **0.3.0** (02.03.2026)
 ------------------------
 - Data pipelines for GLiM & GLHYMPS now pull from online sources, eliminating the need for local data storage.

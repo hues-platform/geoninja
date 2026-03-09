@@ -11,7 +11,7 @@ from typing import List
 project = "GeoNinja"
 copyright = "Copyright 2026, Urban Energy Systems Lab, Empa"
 author = "Urban Energy Systems Lab, Empa"
-release = "0.3.0"
+release = "1.0.0"
 
 # -- General configuration ---------------------------------------------------
 
