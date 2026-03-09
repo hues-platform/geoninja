@@ -1,8 +1,5 @@
 dataset: RockProperties
 full_name: Representative rock thermophysical properties by GLiM lithology key
-publisher: ""
-url: ""
-license_note: ""
-citation: ""
+citation: "VDI Guidelines 4640, December 2021"
 files:
   csv: data_pipeline/sources/rock_properties/rock_properties.csv
