@@ -12,7 +12,7 @@ GeoNinja is a geospatial decision-support platform for rapid, location-based ass
 See the installation section in the documentation.
 
 ## Documentation
-The documentation is available under TODO.
+The documentation is available under [ReadTheDocs](https://geoninja.readthedocs.io/en/latest/).
 
 ## Third-party redistribution
 - [GLiM](https://www.geo.uni-hamburg.de/en/geologie/forschung/aquatische-geochemie/glim.html/)
